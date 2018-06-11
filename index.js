@@ -1,3 +1,16 @@
 'use strict';
 
-module.exports = {};
+class SillyPromise {
+    constructor(resolve, reject) {
+    }
+
+    then() {
+        return this;
+    }
+
+    catch() {
+        return this;
+    }
+}
+
+module.exports.SillyPromise = SillyPromise;
