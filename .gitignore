@@ -1,0 +1,13 @@
+# Logs
+logs
+.log
+npm-debug.log*
+
+# NPM
+package-lock.json
+
+# Dependency directories
+node_modules
+
+# VIM
+*.swp
