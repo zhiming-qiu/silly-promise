@@ -8,7 +8,7 @@
         "url": "https://github.com/coding-pig/silly-promise"
     },
     "scripts": {
-        "test": "jest --coverage && codecov --token=f2b1423d-9d3d-4275-b9d1-6318e15960e2"
+        "test": "jest --coverage && codecov --token=5617c169-1f35-4e39-93a3-4cc83238a801"
     },
     "jest": {
         "verbose": true,
