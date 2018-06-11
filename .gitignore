@@ -11,3 +11,9 @@ node_modules
 
 # VIM
 *.swp
+
+# coverage
+coverage
+
+# Mac OS X
+.DS_Store

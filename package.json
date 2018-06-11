@@ -1,12 +1,33 @@
 {
     "name": "silly-promise",
     "version": "1.0.0",
-    "scripts": {
-        "test": "jest"
+    "author": "foo",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/coding-pig/silly-promise"
     },
-    "jest": {},
+    "scripts": {
+        "test": "jest --coverage && codecov --token=f2b1423d-9d3d-4275-b9d1-6318e15960e2"
+    },
+    "jest": {
+        "verbose": true,
+        "coveragePathIgnorePatterns": [
+            "__tests__",
+            "node_modules"
+        ],
+        "coverageThreshold": {
+            "global": {
+                "statements": 100,
+                "branches": 100,
+                "functions": 100,
+                "lines": 100
+            }
+        }
+    },
     "dependencies": {},
     "devDependencies": {
-        "jest": "^22.4.2"
+        "jest": "^22.4.2",
+        "codecov": "^1.0.0"
     }
 }

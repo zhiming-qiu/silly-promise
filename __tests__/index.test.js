@@ -25,11 +25,18 @@ describe('SillyPromise', () => {
         expect(sp).toBeInstanceOf(index.SillyPromise);
     });
 
-    it('should be a thenable', () => {
-        expect(typeof sp.then).toEqual('function');
+    it('should be exposing class methods', () => {
+        ['resolve', 'reject', 'race', 'all'].forEach((m) => {
+            expect(typeof index.SillyPromise[m]).toEqual('function');
+            index.SillyPromise[m]();
+        });
     });
 
-    it('should be a catch-able', () => {
-        expect(typeof sp.catch).toEqual('function');
+    it('should be exposing instance methods', () => {
+        ['then', 'catch', 'finally'].forEach((m) => {
+            expect(typeof sp[m]).toEqual('function');
+            sp[m]();
+        });
     });
+
 });
