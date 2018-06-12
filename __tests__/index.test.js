@@ -39,4 +39,14 @@ describe('SillyPromise', () => {
         });
     });
 
+    it('should be able to generate a rejected instance', () => {
+        let rejected = index.SillyPromise.reject(new Error('Foo error'));
+        const mockOnThen = jest.fn();
+        const mockOnCatch = jest.fn();
+        rejected.then(mockOnThen).catch(mockOnCatch);
+        // TODO: implement SillyPromise to pass the tests below
+        expect(mockOnThen.mock.calls.length).toBe(0);
+        expect(mockOnCatch.mock.calls.length).toBe(1);
+    });
+
 });
