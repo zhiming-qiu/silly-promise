@@ -25,8 +25,12 @@ class SillyPromise {
 
     /* class method */
 
-    static resolve() {
-        throw new Error('Not implemented');
+    static resolve(v) {
+        let resolved = new SillyPromise();
+        resolved.status = PROMISE_STATUS.RESOLVED;
+        resolved.value = v;
+        process.nextTick(resolved.run.bind(resolved));
+        return resolved;
     }
 
     static reject(v) {
