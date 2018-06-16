@@ -56,10 +56,21 @@ describe('SillyPromise', () => {
     });
 
 
-    it('should be able to then a resolved instance', (done) => {
+    it('should be able to then directly a resolved instance', (done) => {
         let resolved = index.SillyPromise.resolve("Foo");
         const mockOnCatch = jest.fn();
         resolved.catch(mockOnCatch).then(() => {
+            expect(mockOnCatch.mock.calls.length).toBe(0);
+            done();
+        });
+    });
+
+    it('should be able to then indirectly a resolved instance', (done) => {
+        let resolved = index.SillyPromise.resolve("Foo");
+        const mockOnCatch = jest.fn();
+        resolved.catch(mockOnCatch).then((v) => {
+            return index.SillyPromise.resolve(v);
+        }).then(() => {
             expect(mockOnCatch.mock.calls.length).toBe(0);
             done();
         });
