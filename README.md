@@ -8,3 +8,9 @@ How to build
 ------------
 
 Run `npm install && npm test`
+
+
+How to debug
+------------
+
+Run `node --inspect-brk ./node_modules/.bin/jest -i`
