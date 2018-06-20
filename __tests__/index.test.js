@@ -84,7 +84,7 @@ describe('SillyPromise', () => {
         expect(index.SillyPromise.all).toThrow(new Error('Not implemented'));
     });
 
-    it.skip('should find the correct then handler from handler chain', (done) => {
+    it('should find the correct then handler from handler chain', (done) => {
         let zero = 0;
         sp = new index.SillyPromise((resolve, reject) => {
             resolve("resolved");
@@ -93,8 +93,8 @@ describe('SillyPromise', () => {
             return null;
         }).catch(() => {
             zero += 1; // should not be reached
-            return null;
         }).then(() => {
+            return index.SillyPromise.reject('Rejected');
         }).catch(() => {
             expect(zero).toBe(0);
             done();

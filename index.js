@@ -18,9 +18,10 @@ class SillyPromise {
     }
 
     constructor(onCreation) {
+        debugger;
         this.init();
         if (onCreation && typeof onCreation === 'function')
-            onCreation();
+            onCreation(this._resolve.bind(this), this._reject.bind(this));
     }
 
     /* class method */
@@ -61,6 +62,7 @@ class SillyPromise {
         return this;
     }
 
+    // TODO when either then or catch handler is pickup, it should clean the other handler stack for all preceeding ones
     // When under invocation, the status should be no PENDING
     run() {
         /* if (this.status === PROMISE_STATUS.PENDING) {
