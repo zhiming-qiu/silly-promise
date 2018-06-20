@@ -18,7 +18,6 @@ class SillyPromise {
     }
 
     constructor(onCreation) {
-        debugger;
         this.init();
         if (onCreation && typeof onCreation === 'function')
             onCreation(this._resolve.bind(this), this._reject.bind(this));
