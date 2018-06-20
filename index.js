@@ -27,17 +27,13 @@ class SillyPromise {
 
     static resolve(v) {
         let resolved = new SillyPromise();
-        resolved.status = PROMISE_STATUS.RESOLVED;
-        resolved.value = v;
-        process.nextTick(resolved.run.bind(resolved));
+        resolved._resolve(v);
         return resolved;
     }
 
     static reject(v) {
         let rejected = new SillyPromise();
-        rejected.status = PROMISE_STATUS.REJECTED;
-        rejected.value = v;
-        process.nextTick(rejected.run.bind(rejected));
+        rejected._reject(v);
         return rejected;
     }
 
@@ -50,6 +46,20 @@ class SillyPromise {
     }
 
     /* instance method */
+
+    _resolve(v) {
+        this.status = PROMISE_STATUS.RESOLVED;
+        this.value = v;
+        process.nextTick(this.run.bind(this));
+        return this;
+    }
+
+    _reject(v) {
+        this.status = PROMISE_STATUS.REJECTED;
+        this.value = v;
+        process.nextTick(this.run.bind(this));
+        return this;
+    }
 
     // When under invocation, the status should be no PENDING
     run() {
