@@ -7,12 +7,16 @@ const PROMISE_STATUS = Object.freeze({
     RESOLVED:  Symbol("Resolved")
 });
 
+const PROMISE_TYPES = Object.freeze({
+    THEN: Symbol('Then'),
+    CATCH: Symbol('Catch')
+});
+
 class SillyPromise {
 
     init() {
         this.status = PROMISE_STATUS.PENDING;
-        this.thenHandlers = [];
-        this.catchHandlers = [];
+        this.handlers = [];
         //this.finallyHandler = undefined;
         this.value = undefined;
     }
@@ -61,47 +65,68 @@ class SillyPromise {
         return this;
     }
 
+    _getHandler(promiseType) {
+        if (!this.handlers.length) {
+            return;
+        }
+
+        let handler = this.handlers.shift();
+        while (handler && handler.type !== promiseType) {
+            handler = this.handlers.shift();
+        }
+
+        return handler && handler.func;
+    }
+
     // TODO when either then or catch handler is pickup, it should clean the other handler stack for all preceeding ones
     // When under invocation, the status should be no PENDING
     run() {
-        /* if (this.status === PROMISE_STATUS.PENDING) {
-            throw new Error('Promise should have been fulfilled.');
-        }*/
-
         while (this.status !== PROMISE_STATUS.PENDING) {
-            let theHandler;
+            let handler = null;
             if (this.status === PROMISE_STATUS.REJECTED) {
-                if (this.catchHandlers.length === 0) {
-                    break;
-                }
-                theHandler = this.catchHandlers.shift();
+                handler = this._getHandler(PROMISE_TYPES.CATCH);
             } else {
-                if (this.thenHandlers.length === 0) {
-                    break;
+                handler = this._getHandler(PROMISE_TYPES.THEN);
+            }
+
+            if (!handler) {
+                break;
+            }
+
+            try {
+                const tempPromise = handler(this.value);
+
+                // return scalar, null, undefined
+                if (!(tempPromise instanceof SillyPromise)) {
+                    this.value = tempPromise;
+                    this.status = PROMISE_STATUS.RESOLVED;
                 }
-                theHandler = this.thenHandlers.shift();
+                // return new Promise
+                else {
+                    this.value = tempPromise.value;
+                    this.status = tempPromise.status;
+                    this.handlers = tempPromise.handlers.concat(this.handlers);
+                }
+            } catch (error) {
+                this.status = PROMISE_STATUS.REJECTED;
+                this.value = error;
             }
-            let tempPromise = theHandler(this.value);
-            // TODO handle exception from handler
-            if (!tempPromise) {
-                tempPromise = new SillyPromise();
-                tempPromise.status = PROMISE_STATUS.RESOLVED;
-                tempPromise.value = null;
-            }
-            this.value = tempPromise.value;
-            this.status = tempPromise.status;
-            this.thenHandlers = tempPromise.thenHandlers.concat(this.thenHandlers);
-            this.catchHandlers = tempPromise.catchHandlers.concat(this.catchHandlers);
         }
     }
 
     then(onThen) {
-        this.thenHandlers.push(onThen);
+        this.handlers.push({
+            type: PROMISE_TYPES.THEN,
+            func: onThen
+        });
         return this;
     }
 
     catch(onCatch) {
-        this.catchHandlers.push(onCatch);
+        this.handlers.push({
+            type: PROMISE_TYPES.CATCH,
+            func: onCatch
+        });
         return this;
     }
 

@@ -84,6 +84,18 @@ describe('SillyPromise', () => {
         expect(index.SillyPromise.all).toThrow(new Error('Not implemented'));
     });
 
+    it('should catch a thrown error via catch handler', (done) => {
+        sp = new index.SillyPromise((resolve, reject) => {
+            resolve('3');
+        });
+        sp.then(() => {
+            throw new Error('Mr T');
+        }).catch((e) => {
+            expect(e.message).toBe('Mr T');
+            done();
+        }).then(() => {});
+    });
+
     it('should find the correct then handler from handler chain', (done) => {
         let zero = 0;
         sp = new index.SillyPromise((resolve, reject) => {
