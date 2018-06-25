@@ -75,7 +75,7 @@ class SillyPromise {
             handler = this.handlers.shift();
         }
 
-        return handler.func;
+        return handler && handler.func;
     }
 
     // TODO when either then or catch handler is pickup, it should clean the other handler stack for all preceeding ones
@@ -93,17 +93,25 @@ class SillyPromise {
                 break;
             }
 
-            let tempPromise = handler(this.value);
+            try {
+                const tempPromise = handler(this.value);
 
-            // TODO handle exception from handler
-            if (!tempPromise) {
-                tempPromise = new SillyPromise();
-                tempPromise.status = PROMISE_STATUS.RESOLVED;
-                tempPromise.value = null;
+                console.log(tempPromise);
+                // return scalar, null, undefined
+                if (!tempPromise instanceof SillyPromise) {
+                    this.value = this.value || tempPromise;
+                    this.status = PROMISE_STATUS.RESOLVED;
+                }
+                // return new Promise
+                else {
+                    this.value = tempPromise.value;
+                    this.status = tempPromise.status;
+                    this.handlers = tempPromise.handlers.concat(this.handlers);
+                }
+            } catch (error) {
+                this.status = PROMISE_STATUS.REJECTED;
+                this.value = error;
             }
-            this.value = tempPromise.value;
-            this.status = tempPromise.status;
-            this.handlers = tempPromise.handlers.concat(this.handlers);
         }
     }
 
