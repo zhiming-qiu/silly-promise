@@ -96,10 +96,9 @@ class SillyPromise {
             try {
                 const tempPromise = handler(this.value);
 
-                console.log(tempPromise);
                 // return scalar, null, undefined
-                if (!tempPromise instanceof SillyPromise) {
-                    this.value = this.value || tempPromise;
+                if (!(tempPromise instanceof SillyPromise)) {
+                    this.value = tempPromise;
                     this.status = PROMISE_STATUS.RESOLVED;
                 }
                 // return new Promise
