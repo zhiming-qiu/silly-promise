@@ -114,4 +114,76 @@ describe('SillyPromise', () => {
         });
     });
 
+    it('should race out when the faster promise resolves', (done) => {
+        let fastPromise = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve("Cheetah");
+            }, 0);
+        });
+        let slowPromise = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve("Snail");
+            }, 1000);
+        });
+        sp = index.SillyPromise.race([fastPromise, slowPromise]).then((result) => {
+            expect(result).toBe('Cheetah');
+            done();
+        });
+    });
+
+    it('should race out when the faster promise rejects', (done) => {
+        let fastPromise = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                reject("Cheetah");
+            }, 0);
+        });
+        let slowPromise = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                reject("Snail");
+            }, 1000);
+        });
+        sp = index.SillyPromise.race([fastPromise, slowPromise]).catch((e) => {
+            expect(e).toBe('Cheetah');
+            done();
+        });
+    });
+
+    it('should race out when the faster promise rejects', (done) => {
+        let fastPromise = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                reject("Cheetah");
+            }, 0);
+        });
+        let slowPromise = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve("Snail");
+            }, 1000);
+        });
+        sp = index.SillyPromise.race([fastPromise, slowPromise]).then((result) => {
+            expect(e).toBe('Snail');
+        }).catch((e) => {
+            expect(e).toBe('Cheetah');
+            done();
+        });
+    });
+
+    it('should race out when the faster promise resolves', (done) => {
+        let fastPromise = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve("Cheetah");
+            }, 0);
+        });
+        let slowPromise = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                reject("Snail");
+            }, 1000);
+        });
+        sp = index.SillyPromise.race([fastPromise, slowPromise]).then((result) => {
+            expect(e).toBe('Cheetah');
+            done();
+        }).catch((e) => {
+            expect(e).toBe('Snail');
+        });
+    });
+
 });
