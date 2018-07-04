@@ -229,4 +229,26 @@ describe('SillyPromise', () => {
         });
     });
 
+    it('should wait until all promises resolve', (done) => {
+        let sp1 = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(1);
+            }, 100);
+        });
+        let sp2 = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(2);
+            }, 200);
+        });
+        let sp3 = new index.SillyPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(3);
+            }, 300);
+        });
+        let final = index.SillyPromise.all([sp1, sp2, sp3]).then((result) => {
+            expect(result.reduce((a,b)=>{return a+b;}, 0)).toBe(1+2+3);
+            done();
+        });
+    });
+
 });
