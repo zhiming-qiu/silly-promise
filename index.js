@@ -15,6 +15,8 @@ const PROMISE_TYPES = Object.freeze({
 class SillyPromise {
 
     init() {
+        this.raceListeners = [];
+        this.allListeners = [];
         this.status = PROMISE_STATUS.PENDING;
         this.handlers = [];
         //this.finallyHandler = undefined;
@@ -41,8 +43,12 @@ class SillyPromise {
         return rejected;
     }
 
-    static race() {
-        throw new Error('Not implemented');
+    static race(emitters) {
+        let toRace = new SillyPromise();
+        emitters.forEach((emitter) => {
+            emitter.raceListeners.push(toRace);
+        });
+        return toRace;
     }
 
     static all() {
@@ -55,6 +61,10 @@ class SillyPromise {
         this.status = PROMISE_STATUS.RESOLVED;
         this.value = v;
         process.nextTick(this.run.bind(this));
+        this.raceListeners.forEach((racer) => {
+            if (racer.status === PROMISE_STATUS.PENDING)
+                racer._resolve(v);
+        }); 
         return this;
     }
 
@@ -62,6 +72,10 @@ class SillyPromise {
         this.status = PROMISE_STATUS.REJECTED;
         this.value = v;
         process.nextTick(this.run.bind(this));
+        this.raceListeners.forEach((racer) => {
+            if (racer.status === PROMISE_STATUS.PENDING)
+                racer._reject(v);
+        }); 
         return this;
     }
 
