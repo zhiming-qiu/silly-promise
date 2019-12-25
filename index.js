@@ -1,5 +1,7 @@
 'use strict';
 
+// just a silly change
+
 const PROMISE_STATUS = Object.freeze({
     PENDING:   Symbol("Pending"),
     FULFILLED: Symbol("Fulfilled"),
