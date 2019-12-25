@@ -229,7 +229,7 @@ describe('SillyPromise', () => {
         });
     });
 
-    it('should wait until all promises resolve', (done) => {
+    it.skip('should wait until all promises resolve', (done) => {
         let sp1 = new index.SillyPromise((resolve, reject) => {
             setTimeout(() => {
                 resolve(1);
