@@ -12,6 +12,7 @@
     },
     "jest": {
         "verbose": true,
+        "testURL": "http://localhost/",
         "coveragePathIgnorePatterns": [
             "__tests__",
             "node_modules"
